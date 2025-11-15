@@ -219,6 +219,30 @@ def main() -> None:
         "Use Daytona to apply the code fixes suggested by LLM 911 in a reproducible dev environment."
     )
 
+    # This gives the user a reproducible dev workspace.
+    # We are not opening a sandbox here, just giving the reproducible CLI command.
+    st.subheader("🔧 Reproduce & Fix in Daytona")
+
+    st.markdown("""
+    **Want to debug this incident in a clean environment?**
+    
+    Use Daytona to spin up a reproducible development workspace with this codebase:
+    
+    ```bash
+    # Install Daytona CLI
+    # Windows: (Run in PowerShell as Administrator)
+    md -Force "$Env:APPDATA\daytona"; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]'Tls,Tls11,Tls12'; Invoke-WebRequest -URI "https://download.daytona.io/cli/latest/daytona-windows-amd64.exe" -o $Env:APPDATA\daytona\daytona.exe; $env:Path += ";" + $Env:APPDATA + "\daytona"; [Environment]::SetEnvironmentVariable("Path", $env:Path, [System.EnvironmentVariableTarget]::User)
+    
+    # Create your sandbox
+    daytona create https://github.com/arun3676/LLM-911.git
+    ```
+    
+    🚀 **Benefits:**
+    - Instant development environment with all dependencies
+    - Apply LLM 911 fixes in a safe, isolated workspace
+    - No local setup required - everything works in the cloud
+    """)
+
 
 if __name__ == "__main__":
     main()
