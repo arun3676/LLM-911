@@ -1,0 +1,171 @@
+{
+  "run_id": "llm-911-prod-2025-11-14",
+  "project_name": "llm-911",
+  "environment": "production",
+  "model_family": "claude",
+  "records": [
+    {
+      "record_id": "timeout-001",
+      "timestamp": "2025-11-14T04:51:22.345Z",
+      "model": {
+        "provider": "anthropic",
+        "name": "claude-3-5-sonnet",
+        "temperature": 0.2,
+        "max_tokens": 512
+      },
+      "input": {
+        "prompt": "Summarize all P1 incidents in the last 24 hours.",
+        "metadata": {
+          "customer_id": "cust_10293",
+          "tenant": "example-customer",
+          "use_case": "incident_summary"
+        },
+        "reference_context": [
+          "INC-4321: API latency spikes in us-west-2",
+          "INC-4450: Cache cluster failure in eu-west-1"
+        ]
+      },
+      "output": {
+        "text": "",
+        "finish_reason": "timeout",
+        "tokens": {
+          "prompt": 128,
+          "completion": 0,
+          "total": 128
+        }
+      },
+      "metrics": {
+        "latency_ms": 31000,
+        "timeout": true,
+        "cache_hit": false,
+        "retries": 1
+      },
+      "labels": {
+        "incident_type": "timeout",
+        "is_hallucination": false,
+        "is_slow": true,
+        "is_failure": true
+      },
+      "evals": {
+        "hallucination_score": 0.0,
+        "relevance_score": 0.0,
+        "toxicity_score": 0.0,
+        "satisfaction_score": 0.0
+      },
+      "trace": {
+        "trace_id": "4f3a6c84581b4c8b9fd93d2f9e12a7c3",
+        "span_id": "a9c4b1d28f634f7c",
+        "request_id": "req-timeout-001"
+      }
+    },
+    {
+      "record_id": "slow-001",
+      "timestamp": "2025-11-14T05:03:12.001Z",
+      "model": {
+        "provider": "anthropic",
+        "name": "claude-3-5-sonnet",
+        "temperature": 0.3,
+        "max_tokens": 1024
+      },
+      "input": {
+        "prompt": "Generate an RCA for incident INC-4321 with clear mitigation steps.",
+        "metadata": {
+          "customer_id": "cust_84510",
+          "tenant": "example-customer",
+          "use_case": "rca_generation"
+        },
+        "reference_context": [
+          "INC-4321: API latency spikes in us-west-2",
+          "RCA guidelines: Include root cause, impact, and corrective actions."
+        ]
+      },
+      "output": {
+        "text": "Here is a detailed root cause analysis for incident INC-4321...",
+        "finish_reason": "length",
+        "tokens": {
+          "prompt": 210,
+          "completion": 620,
+          "total": 830
+        }
+      },
+      "metrics": {
+        "latency_ms": 12420,
+        "timeout": false,
+        "cache_hit": false,
+        "retries": 0
+      },
+      "labels": {
+        "incident_type": "slow_llm_response",
+        "is_hallucination": false,
+        "is_slow": true,
+        "is_failure": false
+      },
+      "evals": {
+        "hallucination_score": 0.05,
+        "relevance_score": 0.88,
+        "toxicity_score": 0.0,
+        "satisfaction_score": 0.6
+      },
+      "trace": {
+        "trace_id": "9a1337662c7b44eeb3e3a2fcd2f6a7f9",
+        "span_id": "7fb4e229c1e946c3",
+        "request_id": "req-slow-003"
+      }
+    },
+    {
+      "record_id": "hallucination-001",
+      "timestamp": "2025-11-14T05:15:46.801Z",
+      "model": {
+        "provider": "anthropic",
+        "name": "claude-3-5-sonnet",
+        "temperature": 0.7,
+        "max_tokens": 256
+      },
+      "input": {
+        "prompt": "Which Kubernetes cluster did incident INC-9876 impact?",
+        "metadata": {
+          "customer_id": "cust_94822",
+          "tenant": "example-customer",
+          "use_case": "incident_qna"
+        },
+        "reference_context": [
+          "INC-9876: Production outage in k8s-prod-us-west-2 cluster.",
+          "Cluster inventory: k8s-prod-us-west-2, k8s-prod-eu-west-1, k8s-staging-us-west-2."
+        ],
+        "expected_answer": "Incident INC-9876 impacted the k8s-prod-us-west-2 cluster."
+      },
+      "output": {
+        "text": "Incident INC-9876 impacted the dev-sandbox cluster in eu-central-1.",
+        "finish_reason": "stop",
+        "tokens": {
+          "prompt": 96,
+          "completion": 54,
+          "total": 150
+        }
+      },
+      "metrics": {
+        "latency_ms": 2100,
+        "timeout": false,
+        "cache_hit": false,
+        "retries": 0
+      },
+      "labels": {
+        "incident_type": "hallucination",
+        "is_hallucination": true,
+        "is_slow": false,
+        "is_failure": true
+      },
+      "evals": {
+        "hallucination_score": 0.92,
+        "relevance_score": 0.18,
+        "toxicity_score": 0.0,
+        "satisfaction_score": 0.1
+      },
+      "trace": {
+        "trace_id": "c3219bfadf1140f29dbe4fcbc92f9c34",
+        "span_id": "93f4a1b95bfa4beb",
+        "request_id": "req-hallu-007"
+      }
+    }
+  ]
+}

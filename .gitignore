@@ -1,0 +1,8 @@
+# Do not commit environment/secret files
+.env
+*.env
+data/.env
+
+# (Optional) Python byproducts
+__pycache__/
+*.pyc
