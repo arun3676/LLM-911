@@ -4,7 +4,7 @@ from pathlib import Path
 import streamlit as st
 
 from create_daytona_sandbox import create_daytona_sandbox
-from llm_investigator import run_code_review, run_llm_911 as run_llm_911_llm
+from llm_investigator import run_code_review, run_llm_911 as run_llm_911_llm, check_provider_status
 
 # ----- Constants for data files -----
 DATA_DIR = Path("data")
@@ -28,6 +28,8 @@ def init_session_state() -> None:
         st.session_state.code_review_summary = ""
     if "daytona_status" not in st.session_state:
         st.session_state.daytona_status = {}
+    if "browser_status" not in st.session_state:
+        st.session_state.browser_status = ""
 
 
 def load_json_file(path: Path):
@@ -128,6 +130,13 @@ def run_llm_911() -> None:
     st.session_state.report_text = report
 
 
+def check_browser_provider_status() -> None:
+    """Check provider status using Browser Use and store result in session state."""
+    with st.spinner("Checking provider status with Browser Use..."):
+        status = check_provider_status()
+        st.session_state.browser_status = status
+
+
 def provision_daytona_sandbox() -> None:
     """Provision a Daytona sandbox via the SDK and capture status in session state."""
     try:
@@ -164,11 +173,11 @@ def main() -> None:
 
     st.write(
         "Use the buttons below to load a sample incident, run the LLM 911 analysis, "
-        "and optionally spin up a Daytona sandbox for hands-on debugging."
+        "check provider status with Browser Use, and optionally spin up a Daytona sandbox for hands-on debugging."
     )
 
-    # Layout: three buttons side by side
-    col1, col2, col3 = st.columns(3)
+    # Layout: four buttons side by side
+    col1, col2, col3, col4 = st.columns(4)
 
     with col1:
         if st.button("Load Sample Incident"):
@@ -179,6 +188,10 @@ def main() -> None:
             run_llm_911()
 
     with col3:
+        if st.button("Check Provider Status"):
+            check_browser_provider_status()
+
+    with col4:
         if st.button("Provision Daytona Sandbox"):
             provision_daytona_sandbox()
 
@@ -196,6 +209,18 @@ def main() -> None:
         st.text(st.session_state.code_review_summary)
     else:
         st.text("Run LLM 911 to generate a CodeRabbit-style review of the code.")
+
+    # Browser Use status section
+    st.subheader("🌐 Provider Status (Browser Use)")
+    if st.session_state.browser_status:
+        if "warning" in st.session_state.browser_status.lower():
+            st.warning(st.session_state.browser_status)
+        elif "failed" in st.session_state.browser_status.lower():
+            st.error(st.session_state.browser_status)
+        else:
+            st.success(st.session_state.browser_status)
+    else:
+        st.info("Click 'Check Provider Status' to use Browser Use Cloud to check Anthropic's status page.")
 
     with st.expander("View related code"):
         code_to_show = st.session_state.get("broken_code") or "# broken_code.py not loaded yet. Click 'Load Sample Incident'."
